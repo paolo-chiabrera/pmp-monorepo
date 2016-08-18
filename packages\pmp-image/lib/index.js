@@ -11,6 +11,7 @@ export default class PMPImage {
     this.options = {
       pmpApiUrl: 'http://api.picmeplease.eu',
       folderPath: './images',
+      dimensions: [100, 200, 300],
       request: {
         json: true,
         headers: {}
@@ -22,7 +23,7 @@ export default class PMPImage {
 
   save(args, done) {
     const schema = Joi.object().required().keys({
-      imageUrl: Joi.string().required()
+      url: Joi.string().required()
     });
 
     schema.validate(args, (err, val) => {
@@ -34,22 +35,42 @@ export default class PMPImage {
       async.auto({
         generateFilename: (next) => {
           main.generateFilename({
-            imageUrl: val.imageUrl,
+            url: val.url,
             source: this.source
           }, next);
         },
         saveAsFile: ['generateFilename', (results, next) => {
           main.saveAsFile({
-            imageUrl: val.imageUrl,
+            url: val.url,
             filename: results.generateFilename.filename,
             folderPath: this.options.folderPath
           }, next);
         }],
-        storeOnDB: ['saveAsFile', (results, next) => {
+        getFileStats: ['saveAsFile', (results, next) => {
+          main.getFileStats({
+            filePath: results.saveAsFile.filePath
+          }, next);
+        }],
+        generateThumbs: ['getFileStats', (results, next) => {
+          main.generateThumbs({
+            filePath: results.saveAsFile.filePath,
+            destFolderPath: this.options.folderPath,
+            dimensions: this.options.dimensions
+          }, next);
+        }],
+        storeOnDB: ['generateThumbs', (results, next) => {
+          const metadata = results.generateThumbs.metadata;
+
           main.storeOnDB({
             source: this.source,
             filename: results.generateFilename.filename,
-            imageUrl: val.imageUrl,
+            url: val.url,
+            meta: {
+              width: metadata.width,
+              height: metadata.height,
+              format: metadata.format,
+              size: results.getFileStats.stats.size
+            },
             options: this.options
           }, next);
         }]
@@ -59,7 +80,7 @@ export default class PMPImage {
           return;
         }
 
-        done(null, results);
+        done(null, results.storeOnDB.image);
       });
     });
   }

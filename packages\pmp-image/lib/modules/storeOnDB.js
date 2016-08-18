@@ -12,8 +12,9 @@ export default function storeOnDB(args, done) {
   const schema = Joi.object().required().keys({
     source: validators.source,
     filename: Joi.string().required(),
-    imageUrl: Joi.string().required(),
-    options: validators.options
+    url: Joi.string().required(),
+    options: validators.options,
+    meta: validators.meta
   });
 
   schema.validate(args, (err, val) => {
@@ -26,9 +27,13 @@ export default function storeOnDB(args, done) {
 
     const payload = {
       filename: val.filename,
-      imageUrl: val.imageUrl,
+      url: val.url,
       source: val.source.id
     };
+
+    if (val.meta) payload.meta = val.meta;
+
+    if (val.options.dimensions) payload.thumbs = val.options.dimensions;
 
     needle.post(url, payload, val.options.request, (err, res) => {
       if (err) {

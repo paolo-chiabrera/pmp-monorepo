@@ -29,7 +29,7 @@ describe('generateFilename', function () {
     });
 
     generateFilename({
-      imageUrl: mocks.imageUrl,
+      url: mocks.url,
       source: mocks.source
     }, cb);
   }));

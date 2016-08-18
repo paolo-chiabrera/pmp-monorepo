@@ -67,7 +67,7 @@ describe('saveAsFile', function () {
     });
 
     saveAsFile({
-      imageUrl: mocks.imageUrl,
+      url: mocks.url,
       filename: mocks.filename,
       folderPath: mocks.options.folderPath
     }, cb);
@@ -102,7 +102,7 @@ describe('saveAsFile', function () {
     });
 
     saveAsFile({
-      imageUrl: mocks.imageUrl,
+      url: mocks.url,
       filename: mocks.filename,
       folderPath: mocks.options.folderPath
     }, cb);

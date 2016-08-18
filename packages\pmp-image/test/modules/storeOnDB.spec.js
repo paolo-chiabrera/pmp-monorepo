@@ -36,7 +36,7 @@ describe('storeOnDB', function () {
     storeOnDB({
       source: mocks.source,
       filename: mocks.filename,
-      imageUrl: mocks.imageUrl,
+      url: mocks.url,
       options: mocks.options
     }, cb);
   }));
@@ -60,7 +60,7 @@ describe('storeOnDB', function () {
     storeOnDB({
       source: mocks.source,
       filename: mocks.filename,
-      imageUrl: mocks.imageUrl,
+      url: mocks.url,
       options: mocks.options
     }, cb);
   }));
@@ -77,7 +77,7 @@ describe('storeOnDB', function () {
       sinon.assert.calledOnce(needlePost);
       expect(err).to.be.a('null');
       expect(res).to.be.an('object');
-      expect(res.image).to.eql(mocks.image);
+      expect(res.image).to.be.an('object');
 
       done();
     });
@@ -85,7 +85,7 @@ describe('storeOnDB', function () {
     storeOnDB({
       source: mocks.source,
       filename: mocks.filename,
-      imageUrl: mocks.imageUrl,
+      url: mocks.url,
       options: mocks.options
     }, cb);
   }));

@@ -27,7 +27,12 @@ describe('pmp-image', function () {
   describe('constructor', function () {
     it('should set all the properties', function () {
       expect(pmpImage.source).to.eql(mocks.source);
-      expect(pmpImage.options).to.eql(mocks.options);
+      expect(pmpImage.options).to.be.an('object');
+      expect(pmpImage.options.pmpApiUrl).to.be.a('string');
+      expect(pmpImage.options.folderPath).to.be.a('string');
+      expect(pmpImage.options.dimensions).to.be.an('array');
+      expect(pmpImage.options.request).to.be.an('object');
+      expect(pmpImage.options.request.json).to.be.a('boolean');
     });
   });
 
@@ -59,7 +64,7 @@ describe('pmp-image', function () {
       });
 
       pmpImage.save({
-        imageUrl: mocks.image.imageUrl
+        url: mocks.image.url
       }, cb);
     }));
 
@@ -74,6 +79,17 @@ describe('pmp-image', function () {
           filePath: mocks.options.folderPath + '/' + mocks.image.filename
         });
       });
+      const getFileStats = this.stub(main, 'getFileStats', (args, callback) => {
+        callback(null, {
+          stats: {}
+        });
+      });
+      const generateThumbs = this.stub(main, 'generateThumbs', (args, callback) => {
+        callback(null, {
+          thumbs: mocks.dimensions,
+          metadata: mocks.metadata
+        });
+      });
       const storeOnDB = this.stub(main, 'storeOnDB', (args, callback) => {
         callback(null, {
           image: mocks.image
@@ -84,17 +100,21 @@ describe('pmp-image', function () {
         expect(err).to.be.a('null');
         sinon.assert.calledOnce(generateFilename);
         sinon.assert.calledOnce(saveAsFile);
+        sinon.assert.calledOnce(getFileStats);
+        sinon.assert.calledOnce(generateThumbs);
         sinon.assert.calledOnce(storeOnDB);
         expect(res).to.be.an('object');
 
         generateFilename.restore();
         saveAsFile.restore();
+        getFileStats.restore();
+        generateThumbs.restore();
         storeOnDB.restore();
         done();
       });
 
       pmpImage.save({
-        imageUrl: mocks.image.imageUrl
+        url: mocks.image.url
       }, cb);
     }));
   });

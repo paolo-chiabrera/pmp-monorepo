@@ -12,7 +12,11 @@ $ npm install --save pmp-image
 ```js
 var pmpImage = require('pmp-image');
 
-pmpImage('Rainbow');
+pmpImage({
+  url: 'http://some.thing/'
+}, function(err, response) {
+  /* do something */
+});
 ```
 ## License
 

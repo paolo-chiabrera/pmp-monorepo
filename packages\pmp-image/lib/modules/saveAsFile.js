@@ -10,7 +10,7 @@ import needle from 'needle';
 */
 export default function saveAsFile(args, done) {
   const schema = Joi.object().required().keys({
-    imageUrl: Joi.string().required(),
+    url: Joi.string().required(),
     filename: Joi.string().required(),
     folderPath: Joi.string().required()
   });
@@ -23,7 +23,7 @@ export default function saveAsFile(args, done) {
 
     const filePath = path.resolve(val.folderPath, val.filename);
 
-    needle.get(val.imageUrl)
+    needle.get(val.url)
     .pipe(fs.createWriteStream(filePath))
     .on('error', done)
     .on('close', () => {

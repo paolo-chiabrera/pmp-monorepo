@@ -12,7 +12,7 @@ import validators from './validators';
 */
 export default function generateFilename(args, done) {
   const schema = Joi.object().required().keys({
-    imageUrl: Joi.string().required(),
+    url: Joi.string().required(),
     source: validators.source
   });
 
@@ -22,7 +22,7 @@ export default function generateFilename(args, done) {
       return;
     }
 
-    const parsed = url.parse(val.imageUrl);
+    const parsed = url.parse(val.url);
 
     const filename = val.source.id + '_' + path.basename(parsed.pathname);
 
