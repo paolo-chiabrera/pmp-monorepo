@@ -1,6 +1,5 @@
 import Joi from 'joi';
 import path from 'path';
-import fs from 'fs';
 import needle from 'needle';
 
 /**
@@ -23,10 +22,24 @@ export default function saveAsFile(args, done) {
 
     const filePath = path.resolve(val.folderPath, val.filename);
 
-    needle.get(val.url)
-    .pipe(fs.createWriteStream(filePath))
-    .on('error', done)
-    .on('close', () => {
+    needle.get(val.url, {
+      output: filePath
+    }, (err, res) => {
+      if (err) {
+        done(err);
+        return;
+      }
+
+      if (res.statusCode !== 200) {
+        done(new Error('wrong statusCode ' + res.statusCode + ' ' + res.statusMessage));
+        return;
+      }
+
+      if (parseInt(res.bytes) <= 0) {
+        done(new Error('response bytes ' + res.bytes));
+        return;
+      }
+
       done(null, {
         filePath: filePath
       });

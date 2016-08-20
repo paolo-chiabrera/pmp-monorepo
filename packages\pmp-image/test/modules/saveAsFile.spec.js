@@ -2,31 +2,16 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 
 import needle from 'needle';
-import fs from 'fs';
-import {EventEmitter} from 'events';
 
 import saveAsFile from '../../lib/modules/saveAsFile';
 
 import mocks from '../mocks';
 
 describe('saveAsFile', function () {
-
-  let createWriteStream;
-
   before(function () {
     sinon.config = {
       useFakeTimers: false
     };
-  });
-
-  beforeEach(function () {
-    createWriteStream = sinon.stub(fs, 'createWriteStream', () => {
-      return 'fakeStream';
-    });
-  });
-
-  afterEach(function () {
-    createWriteStream.restore();
   });
 
   it('should be defined', function () {
@@ -42,27 +27,63 @@ describe('saveAsFile', function () {
     saveAsFile({}, cb);
   }));
 
-  it('should return an error: event', sinon.test(function (done) {
+  it('should return an error: needle.get', sinon.test(function (done) {
     const fakeError = new Error('fakeError');
-    const needleGet = this.stub(needle, 'get', () => {
-      return {
-        pipe: () => {
-          const emitter = new EventEmitter;
+    const get = this.stub(needle, 'get', (url, options, callback) => {
+      callback(fakeError);
+    });
+    const cb = this.spy(err => {
+      expect(err).to.eql(fakeError);
+      sinon.assert.calledOnce(get);
 
-          setTimeout(function () {
-            emitter.emit('error', fakeError);
-          }, 10);
+      get.restore();
+      done();
+    });
 
-          return emitter;
-        }
-      };
+    saveAsFile({
+      url: mocks.url,
+      filename: mocks.filename,
+      folderPath: mocks.options.folderPath
+    }, cb);
+  }));
+
+  it('should return an error: statusCode', sinon.test(function (done) {
+    const statusCode = 401;
+    const statusError = new Error('wrong statusCode ' + statusCode);
+    const get = this.stub(needle, 'get', (url, options, callback) => {
+      callback(null, {
+        statusCode: statusCode
+      });
     });
 
     const cb = this.spy(err => {
-      expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(needleGet);
-      sinon.assert.calledOnce(createWriteStream);
+      sinon.assert.calledOnce(get);
+      expect(err).to.eql(statusError);
 
+      get.restore();
+      done();
+    });
+
+    saveAsFile({
+      url: mocks.url,
+      filename: mocks.filename,
+      folderPath: mocks.options.folderPath
+    }, cb);
+  }));
+
+  it('should return an error: bytes', sinon.test(function (done) {
+    const bytesError = new Error('response bytes 0');
+    const get = this.stub(needle, 'get', (url, options, callback) => {
+      callback(null, {
+        statusCode: 200,
+        bytes: 0
+      });
+    });
+    const cb = this.spy(err => {
+      expect(err).to.eql(bytesError);
+      sinon.assert.calledOnce(get);
+
+      get.restore();
       done();
     });
 
@@ -74,30 +95,19 @@ describe('saveAsFile', function () {
   }));
 
   it('should return a filePath', sinon.test(function (done) {
-    const needleGet = this.stub(needle, 'get', () => {
-      return {
-        pipe: (stream) => {
-
-          expect(stream).to.equal('fakeStream');
-
-          const emitter = new EventEmitter;
-
-          setTimeout(function () {
-            emitter.emit('close');
-          }, 10);
-
-          return emitter;
-        }
-      };
+    const get = this.stub(needle, 'get', (url, options, callback) => {
+      callback(null, {
+        statusCode: 200,
+        bytes: 100
+      });
     });
-
     const cb = this.spy((err, res) => {
       expect(err).to.be.a('null');
-      sinon.assert.calledOnce(needleGet);
-      sinon.assert.calledOnce(createWriteStream);
       expect(res).to.be.an('object');
       expect(res.filePath).to.be.a('string');
+      sinon.assert.calledOnce(get);
 
+      get.restore();
       done();
     });
 

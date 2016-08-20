@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 import main from './modules/main'
 
-export default class PMPImage {
+export default class PmpImage {
   constructor(source, options) {
     this.source = source;
 

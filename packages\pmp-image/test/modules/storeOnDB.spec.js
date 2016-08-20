@@ -30,6 +30,7 @@ describe('storeOnDB', function () {
       sinon.assert.calledOnce(needlePost);
       expect(err).to.eql(fakeError);
 
+      needlePost.restore();
       done();
     });
 
@@ -54,6 +55,7 @@ describe('storeOnDB', function () {
       sinon.assert.calledOnce(needlePost);
       expect(err).to.eql(statusError);
 
+      needlePost.restore();
       done();
     });
 
@@ -79,6 +81,7 @@ describe('storeOnDB', function () {
       expect(res).to.be.an('object');
       expect(res.image).to.be.an('object');
 
+      needlePost.restore();
       done();
     });
 
