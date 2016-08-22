@@ -11,7 +11,7 @@ export default class PmpImage {
     this.options = {
       pmpApiUrl: 'http://api.picmeplease.eu',
       folderPath: './images',
-      dimensions: [100, 200, 300],
+      dimensions: [150, 300],
       request: {
         json: true,
         headers: {}

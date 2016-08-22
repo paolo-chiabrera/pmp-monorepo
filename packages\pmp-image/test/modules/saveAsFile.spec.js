@@ -2,6 +2,7 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 
 import needle from 'needle';
+import fs from 'fs';
 
 import saveAsFile from '../../lib/modules/saveAsFile';
 
@@ -71,8 +72,39 @@ describe('saveAsFile', function () {
     }, cb);
   }));
 
+  it('should return an error: fs.unlink', sinon.test(function (done) {
+    const fakeError = new Error('fakeError');
+    const unlink = this.stub(fs, 'unlink', (path, callback) => {
+      callback(fakeError);
+    });
+    const get = this.stub(needle, 'get', (url, options, callback) => {
+      callback(null, {
+        statusCode: 200,
+        bytes: 0
+      });
+    });
+    const cb = this.spy(err => {
+      expect(err).to.eql(fakeError);
+      sinon.assert.calledOnce(get);
+      sinon.assert.calledOnce(unlink);
+
+      get.restore();
+      unlink.restore();
+      done();
+    });
+
+    saveAsFile({
+      url: mocks.url,
+      filename: mocks.filename,
+      folderPath: mocks.options.folderPath
+    }, cb);
+  }));
+
   it('should return an error: bytes', sinon.test(function (done) {
     const bytesError = new Error('response bytes 0');
+    const unlink = this.stub(fs, 'unlink', (path, callback) => {
+      callback(null);
+    });
     const get = this.stub(needle, 'get', (url, options, callback) => {
       callback(null, {
         statusCode: 200,
@@ -82,8 +114,10 @@ describe('saveAsFile', function () {
     const cb = this.spy(err => {
       expect(err).to.eql(bytesError);
       sinon.assert.calledOnce(get);
+      sinon.assert.calledOnce(unlink);
 
       get.restore();
+      unlink.restore();
       done();
     });
 

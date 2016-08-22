@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import path from 'path';
 import needle from 'needle';
+import fs from 'fs';
 
 /**
 * [saveAsFile description]
@@ -36,7 +37,14 @@ export default function saveAsFile(args, done) {
       }
 
       if (parseInt(res.bytes) <= 0) {
-        done(new Error('response bytes ' + res.bytes));
+        fs.unlink(filePath, err => {
+          if (err) {
+            done(err);
+            return;
+          }
+
+          done(new Error('response bytes ' + res.bytes));
+        });
         return;
       }
 
