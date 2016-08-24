@@ -89,7 +89,8 @@ describe('storeOnDB', function () {
       sourceId: mocks.sourceId,
       filename: mocks.filename,
       url: mocks.url,
-      options: mocks.options
+      options: mocks.options,
+      meta:  mocks.metadata
     }, cb);
   }));
 });
