@@ -42,7 +42,7 @@ export default function storeOnDB(args, done) {
       }
 
       if (res.statusCode !== 200) {
-        done(new Error('wrong statusCode ' + res.statusCode + ' ' + res.statusMessage));
+        done(new Error('wrong statusCode ' + res.statusCode + ' ' + JSON.stringify(res.body)));
         return;
       }
 
