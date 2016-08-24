@@ -28,7 +28,7 @@ export default function storeOnDB(args, done) {
     const payload = {
       filename: val.filename,
       url: val.url,
-      sourceId: val.sourceId
+      source: val.sourceId
     };
 
     if (val.meta) payload.meta = val.meta;
