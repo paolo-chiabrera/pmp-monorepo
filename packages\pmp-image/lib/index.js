@@ -36,7 +36,7 @@ export default class PmpImage {
         generateFilename: (next) => {
           main.generateFilename({
             url: val.url,
-            source: this.source
+            sourceId: this.sourceId
           }, next);
         },
         saveAsFile: ['generateFilename', (results, next) => {
@@ -62,7 +62,7 @@ export default class PmpImage {
           const metadata = results.generateThumbs.metadata;
 
           main.storeOnDB({
-            source: this.source,
+            sourceId: this.sourceId,
             filename: results.generateFilename.filename,
             url: val.url,
             meta: {
