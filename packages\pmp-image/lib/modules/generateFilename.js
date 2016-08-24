@@ -13,7 +13,7 @@ import validators from './validators';
 export default function generateFilename(args, done) {
   const schema = Joi.object().required().keys({
     url: Joi.string().required(),
-    source: validators.source
+    sourceId: validators.sourceId
   });
 
   schema.validate(args, (err, val) => {
@@ -24,7 +24,7 @@ export default function generateFilename(args, done) {
 
     const parsed = url.parse(val.url);
 
-    const filename = val.source.id + '_' + path.basename(parsed.pathname);
+    const filename = val.sourceId + '_' + path.basename(parsed.pathname);
 
     const encrypted_filename = crypto
       .createHash('md5')

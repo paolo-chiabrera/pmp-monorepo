@@ -35,7 +35,7 @@ describe('storeOnDB', function () {
     });
 
     storeOnDB({
-      source: mocks.source,
+      sourceId: mocks.sourceId,
       filename: mocks.filename,
       url: mocks.url,
       options: mocks.options
@@ -60,7 +60,7 @@ describe('storeOnDB', function () {
     });
 
     storeOnDB({
-      source: mocks.source,
+      sourceId: mocks.sourceId,
       filename: mocks.filename,
       url: mocks.url,
       options: mocks.options
@@ -86,7 +86,7 @@ describe('storeOnDB', function () {
     });
 
     storeOnDB({
-      source: mocks.source,
+      sourceId: mocks.sourceId,
       filename: mocks.filename,
       url: mocks.url,
       options: mocks.options

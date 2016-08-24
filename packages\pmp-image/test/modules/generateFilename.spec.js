@@ -30,7 +30,7 @@ describe('generateFilename', function () {
 
     generateFilename({
       url: mocks.url,
-      source: mocks.source
+      sourceId: mocks.sourceId
     }, cb);
   }));
 });

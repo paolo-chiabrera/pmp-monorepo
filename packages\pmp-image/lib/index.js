@@ -5,8 +5,8 @@ import _ from 'lodash';
 import main from './modules/main'
 
 export default class PmpImage {
-  constructor(source, options) {
-    this.source = source;
+  constructor(sourceId, options) {
+    this.sourceId = sourceId;
 
     this.options = {
       pmpApiUrl: 'http://api.picmeplease.eu',

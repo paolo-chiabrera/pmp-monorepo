@@ -13,7 +13,7 @@ describe('pmp-image', function () {
   let pmpImage;
 
   beforeEach(function () {
-    pmpImage = new PMPImage(mocks.source, mocks.options);
+    pmpImage = new PMPImage(mocks.sourceId, mocks.options);
   });
 
   afterEach(function () {

@@ -10,7 +10,7 @@ import validators from './validators';
 */
 export default function storeOnDB(args, done) {
   const schema = Joi.object().required().keys({
-    source: validators.source,
+    sourceId: validators.sourceId,
     filename: Joi.string().required(),
     url: Joi.string().required(),
     options: validators.options,
@@ -28,7 +28,7 @@ export default function storeOnDB(args, done) {
     const payload = {
       filename: val.filename,
       url: val.url,
-      source: val.source.id
+      sourceId: val.sourceId
     };
 
     if (val.meta) payload.meta = val.meta;

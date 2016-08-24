@@ -2,16 +2,7 @@ export default {
   url: 'http://fakesource/image0.jpg',
   filename: 'test_filename.jpg',
   filePath: './test-images/test_filename.jpg',
-  source: {
-    id: 'fakesource',
-    url: 'http://fakesource/page/{{offset}}',
-    offset: 10,
-    startingOffset: 0,
-    mainPageSelector: 'a.link',
-    mainPageAttribute: 'href',
-    imagePageSelector: 'img.image',
-    imagePageAttribute: 'src'
-  },
+  sourceId: 'fakesource',
   options: {
     pmpApiUrl: 'http://api.picmeplease.eu',
     folderPath: './test-images',
