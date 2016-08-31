@@ -35,7 +35,7 @@ describe('saveAsFile', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(get);
+      sinon.assert.calledThrice(get);
 
       get.restore();
       done();
@@ -44,7 +44,8 @@ describe('saveAsFile', function () {
     saveAsFile({
       url: mocks.url,
       filename: mocks.filename,
-      folderPath: mocks.options.folderPath
+      folderPath: mocks.options.folderPath,
+      retryInterval: 1
     }, cb);
   }));
 
@@ -53,12 +54,13 @@ describe('saveAsFile', function () {
     const statusError = new Error('wrong statusCode ' + statusCode);
     const get = this.stub(needle, 'get', (url, options, callback) => {
       callback(null, {
-        statusCode: statusCode
+        statusCode: statusCode,
+        body: statusError
       });
     });
 
     const cb = this.spy(err => {
-      sinon.assert.calledOnce(get);
+      sinon.assert.calledThrice(get);
       expect(err).to.eql(statusError);
 
       get.restore();
@@ -68,7 +70,8 @@ describe('saveAsFile', function () {
     saveAsFile({
       url: mocks.url,
       filename: mocks.filename,
-      folderPath: mocks.options.folderPath
+      folderPath: mocks.options.folderPath,
+      retryInterval: 1
     }, cb);
   }));
 
@@ -85,8 +88,8 @@ describe('saveAsFile', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(get);
-      sinon.assert.calledOnce(unlink);
+      sinon.assert.calledThrice(get);
+      sinon.assert.calledThrice(unlink);
 
       get.restore();
       unlink.restore();
@@ -96,7 +99,8 @@ describe('saveAsFile', function () {
     saveAsFile({
       url: mocks.url,
       filename: mocks.filename,
-      folderPath: mocks.options.folderPath
+      folderPath: mocks.options.folderPath,
+      retryInterval: 1
     }, cb);
   }));
 
@@ -113,8 +117,8 @@ describe('saveAsFile', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(bytesError);
-      sinon.assert.calledOnce(get);
-      sinon.assert.calledOnce(unlink);
+      sinon.assert.calledThrice(get);
+      sinon.assert.calledThrice(unlink);
 
       get.restore();
       unlink.restore();
@@ -124,10 +128,11 @@ describe('saveAsFile', function () {
     saveAsFile({
       url: mocks.url,
       filename: mocks.filename,
-      folderPath: mocks.options.folderPath
+      folderPath: mocks.options.folderPath,
+      retryInterval: 1
     }, cb);
   }));
-
+  
   it('should return a filePath', sinon.test(function (done) {
     const get = this.stub(needle, 'get', (url, options, callback) => {
       callback(null, {
@@ -148,7 +153,8 @@ describe('saveAsFile', function () {
     saveAsFile({
       url: mocks.url,
       filename: mocks.filename,
-      folderPath: mocks.options.folderPath
+      folderPath: mocks.options.folderPath,
+      retryInterval: 1
     }, cb);
   }));
 });

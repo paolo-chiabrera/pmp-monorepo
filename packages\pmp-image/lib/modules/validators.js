@@ -16,5 +16,6 @@ export default {
     height: Joi.number().optional(),
     format: Joi.string().optional(),
     size: Joi.number().optional()
-  })
+  }),
+  retryInterval: Joi.number().min(1).default(1000).optional()
 };
