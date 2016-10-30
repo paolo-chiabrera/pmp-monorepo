@@ -20,9 +20,6 @@ export default {
   options: {
     pmpApiUrl: 'http://api.picmeplease.eu',
     scraperApiUrl: 'http://api.scraper.d3lirium.eu',
-    folderPath: './test-images',
-    concurrency: 1,
-    statsInterval: 10,
     request: {
       json: true,
       headers: {}
