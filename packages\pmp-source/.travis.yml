@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+- v7
+- v6
+- v5
+- v4
+before_script:
+- npm install -g gulp
+script: gulp
+deploy:
+  provider: npm
+  email: paolo.chiabrera@gmail.com
+  api_key:
+    secure: kixa0dSNZD7frJWBXvVfw2la73Gd+kV6Wznk281CKg0owoPsC+59mUh5wHUL3BwvTFBK3Bol/+Ma0XGUzmFcfgnwNv6u5aNR+E9/mcbCglOFqZija+cm4YmcVF6IB5vFUTyaj/JZDr2fA9k+W8YXofAPMK0omr8AB221LMohq1oWe0woosjs7IghF6XmTBpjEsL+mVTFijlefN276sES9VOAJMUjHtvUGRJXwSMDKLC5/3+EXr1UFRKsuGFiQqEuTcbll/CS/GOaohHIFGVb+mSXDKm8oGeHcuJz9xlLc6Fm0MiDzcWrebR1R8r9eP2km4ouEqIjl9EhG5i+pAJx21ZgRzaPDCNWkd8InRkCkZoaET0E4Cc9vdVIkVT/AXb7lvIUeUBASIVNBaxGIDREusK29gm7yS/054syyQ2TCAh8/jD/wkIb/LDDmh35mx/+CsVmLgIh+WMg974PUBys9MX/SjuR3Km2lM6HKF4nbyWUXNTIhfd2gK8g+GCruGNsupL6asMRmco5fbo/yhZ3iqK+r80Cfk365wD7zSmWyf+xZ5Fugit21wtN8Y8zcrTXwisUHhX5b3aY+me7+gO3//O+SNz73lzaKI0b3uwq/f2fOwAZXqRUreDRB6WjLoQEGaUu+KjmMzpo9qI4WDh2RaA7zx70235N1Tjhl/kueKo=
+  on:
+    tags: true
+    node: v6
+    repo: paolo-chiabrera/pmp-source
