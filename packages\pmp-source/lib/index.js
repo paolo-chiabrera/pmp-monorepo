@@ -4,7 +4,7 @@ import Joi from 'joi';
 
 import validators from './modules/validators';
 
-function getById(args, done) {
+function getSourceById(args, done) {
   const schema = Joi.object().required().keys({
     sourceId: validators.sourceId,
     options: validators.options
@@ -34,11 +34,13 @@ function getById(args, done) {
         return;
       }
 
-      done(null, res.body)
+      done(null, {
+        source: res.body
+      });
     });
   });
 }
 
 export default {
-  getById
+  getSourceById
 }

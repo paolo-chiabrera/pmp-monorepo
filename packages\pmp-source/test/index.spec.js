@@ -12,9 +12,9 @@ describe('pmp-source', function () {
     expect(PmpSource).to.be.an('object');
   });
 
-  describe('getById', function () {
+  describe('getSourceById', function () {
     it('should be defined', function () {
-      expect(PmpSource.getById).to.be.a('function');
+      expect(PmpSource.getSourceById).to.be.a('function');
     });
 
     it('should raise a validation error', sinon.test(function (done) {
@@ -28,7 +28,7 @@ describe('pmp-source', function () {
         done();
       });
 
-      PmpSource.getById(_args, cb);
+      PmpSource.getSourceById(_args, cb);
     }));
 
     it('should raise an error from needle.get', sinon.test(function (done) {
@@ -50,7 +50,7 @@ describe('pmp-source', function () {
         done();
       });
 
-      PmpSource.getById(_args, cb);
+      PmpSource.getSourceById(_args, cb);
     }));
 
     it('should raise a statusCode error from needle.get', sinon.test(function (done) {
@@ -76,7 +76,7 @@ describe('pmp-source', function () {
         done();
       });
 
-      PmpSource.getById(_args, cb);
+      PmpSource.getSourceById(_args, cb);
     }));
 
     it('should raise an error: source not found', sinon.test(function (done) {
@@ -101,7 +101,7 @@ describe('pmp-source', function () {
         done();
       });
 
-      PmpSource.getById(_args, cb);
+      PmpSource.getSourceById(_args, cb);
     }));
 
     it('should be a success', sinon.test(function (done) {
@@ -117,15 +117,15 @@ describe('pmp-source', function () {
         });
       });
 
-      const cb = this.spy((err, source) => {
+      const cb = this.spy((err, res) => {
         expect(err).to.be.a('null');
-        expect(source).to.eql(_args);
+        expect(res.source).to.eql(_args);
 
         get.restore();
         done();
       });
 
-      PmpSource.getById(_args, cb);
+      PmpSource.getSourceById(_args, cb);
     }));
   });
 });

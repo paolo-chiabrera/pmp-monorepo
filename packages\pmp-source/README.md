@@ -12,7 +12,7 @@ $ npm install --save pmp-source
 ```js
 var pmpSource = require('pmp-source');
 
-pmpSource.getById({
+pmpSource.getSourceById({
   options: options,
   sourceId: 'id'
 }, done);
