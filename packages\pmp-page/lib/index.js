@@ -56,6 +56,7 @@ function scrape (args, done) {
 
       done(null, {
         links: results.filterDuplicates.links,
+        pageUrl: results.getPageUrl.url,
         threshold: results.getImagesThreshold.threshold
       });
     });
