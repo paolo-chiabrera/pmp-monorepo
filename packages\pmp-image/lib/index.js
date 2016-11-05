@@ -9,7 +9,7 @@ import validators from './modules/validators';
 function save (args, done = _.noop) {
   const schema = Joi.object().required().keys({
     options: validators.options,
-    link: validators.link,
+    url: validators.link,
     sourceId: validators.sourceId
   });
 
@@ -49,7 +49,7 @@ function save (args, done = _.noop) {
         const metadata = results.generateThumbs.metadata;
 
         main.storeOnDB({
-          sourceId: this.sourceId,
+          sourceId: val.sourceId,
           filename: results.generateFilename.filename,
           url: val.url,
           meta: {
@@ -90,14 +90,16 @@ function saveBatch (args, done = _.noop) {
       images: []
     };
 
-    async.eachLimit(val.links, val.options.concurrency, (link, next) => {
+    async.eachLimit(val.links, val.options.concurrency, (url, next) => {
       this.save({
-        link
+        options: val.options,
+        sourceId: val.sourceId,
+        url
       }, (err, image) => {
         if (err) {
           out.errors.push({
             message: err.message,
-            link: link
+            url
           });
         } else {
           out.images.push(_.pick(image, ['filename', 'url']));

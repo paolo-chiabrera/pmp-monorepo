@@ -44,7 +44,7 @@ describe('pmp-image', function () {
 
       PmpImage.save({
         options: mocks.options,
-        link: mocks.image.url,
+        url: mocks.image.url,
         sourceId: mocks.sourceId
       }, cb);
     }));
@@ -96,7 +96,7 @@ describe('pmp-image', function () {
 
       PmpImage.save({
         options: mocks.options,
-        link: mocks.image.url,
+        url: mocks.image.url,
         sourceId: mocks.sourceId
       }, cb);
     }));
@@ -139,7 +139,7 @@ describe('pmp-image', function () {
     it('should return 1 error AND 2 images', sinon.test(function (done) {
       const fakeError = new Error('fakeError');
       const save = this.stub(PmpImage, 'save', (args, callback) => {
-        if (args.link === 'fail') {
+        if (args.url === 'fail') {
           callback(fakeError);
         } else {
           callback(null, mocks.image);
@@ -152,8 +152,8 @@ describe('pmp-image', function () {
 
         expect(res.errors).to.have.length(1);
         expect(res.errors[0]).to.eql({
-          link: mocks.links[0],
-          message: fakeError.message
+          message: fakeError.message,
+          url: mocks.links[0]
         });
 
         expect(res.images).to.have.length(2);
