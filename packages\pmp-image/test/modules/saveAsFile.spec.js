@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
+import sinonChai from 'sinon-chai';  // eslint-disable-line no-unused-vars
 
 import needle from 'needle';
 import fs from 'fs';
@@ -35,7 +36,7 @@ describe('saveAsFile', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledThrice(get);
+      expect(get).to.have.been.calledThrice;
 
       get.restore();
       done();
@@ -60,7 +61,7 @@ describe('saveAsFile', function () {
     });
 
     const cb = this.spy(err => {
-      sinon.assert.calledThrice(get);
+      expect(get).to.have.been.calledThrice;
       expect(err).to.eql(statusError);
 
       get.restore();
@@ -88,8 +89,8 @@ describe('saveAsFile', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledThrice(get);
-      sinon.assert.calledThrice(unlink);
+      expect(get).to.have.been.calledThrice;
+      expect(unlink).to.have.been.calledThrice;
 
       get.restore();
       unlink.restore();
@@ -117,8 +118,8 @@ describe('saveAsFile', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(bytesError);
-      sinon.assert.calledThrice(get);
-      sinon.assert.calledThrice(unlink);
+      expect(get).to.have.been.calledThrice;
+      expect(unlink).to.have.been.calledThrice;
 
       get.restore();
       unlink.restore();
@@ -132,7 +133,7 @@ describe('saveAsFile', function () {
       retryInterval: 1
     }, cb);
   }));
-  
+
   it('should return a filePath', sinon.test(function (done) {
     const get = this.stub(needle, 'get', (url, options, callback) => {
       callback(null, {
@@ -144,7 +145,7 @@ describe('saveAsFile', function () {
       expect(err).to.be.a('null');
       expect(res).to.be.an('object');
       expect(res.filePath).to.be.a('string');
-      sinon.assert.calledOnce(get);
+      expect(get).to.have.been.calledOnce;
 
       get.restore();
       done();

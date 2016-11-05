@@ -18,6 +18,7 @@ export default {
     source: 'fakesource',
     thumbs: [300, 600]
   },
+  links: ['fail', 'http://fakesource/image0.jpg', 'http://fakesource/image1.jpg'],
   metadata: {
     width: 100,
     height: 100,

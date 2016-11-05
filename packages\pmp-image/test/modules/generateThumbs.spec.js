@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
+import sinonChai from 'sinon-chai';  // eslint-disable-line no-unused-vars
 
 import sharp from 'sharp';
 import async from 'async';
@@ -29,7 +30,7 @@ describe('generateThumbs', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(metadata);
+      expect(metadata).to.have.been.calledOnce;
 
       metadata.restore();
       done();
@@ -52,8 +53,8 @@ describe('generateThumbs', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(metadata);
-      sinon.assert.calledOnce(eachSeries);
+      expect(metadata).to.have.been.calledOnce;
+      expect(eachSeries).to.have.been.calledOnce;
 
       metadata.restore();
       eachSeries.restore();
@@ -82,9 +83,9 @@ describe('generateThumbs', function () {
 
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(metadata);
-      sinon.assert.calledOnce(resize);
-      sinon.assert.calledOnce(toFile);
+      expect(metadata).to.have.been.calledOnce;
+      expect(resize).to.have.been.calledOnce;
+      expect(toFile).to.have.been.calledOnce;
 
       metadata.restore();
       resize.restore();
@@ -109,8 +110,8 @@ describe('generateThumbs', function () {
     });
     const cb = this.spy((err, res) => {
       expect(err).to.be.a('null');
-      sinon.assert.calledOnce(metadata);
-      sinon.assert.calledOnce(eachSeries);
+      expect(metadata).to.have.been.calledOnce;
+      expect(eachSeries).to.have.been.calledOnce;
       expect(res).to.eql({
         metadata: mocks.metadata,
         thumbs: mocks.dimensions

@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
+import sinonChai from 'sinon-chai'; // eslint-disable-line no-unused-vars
 
 import needle from 'needle';
 
@@ -27,7 +28,7 @@ describe('storeOnDB', function () {
       callback(fakeError);
     });
     const cb = this.spy(err => {
-      sinon.assert.calledOnce(needlePost);
+      expect(needlePost).to.have.been.calledOnce;
       expect(err).to.eql(fakeError);
 
       needlePost.restore();
@@ -52,7 +53,7 @@ describe('storeOnDB', function () {
     });
 
     const cb = this.spy(err => {
-      sinon.assert.calledOnce(needlePost);
+      expect(needlePost).to.have.been.calledOnce;
       expect(err).to.eql(statusError);
 
       needlePost.restore();
@@ -76,7 +77,7 @@ describe('storeOnDB', function () {
     });
 
     const cb = this.spy((err, res) => {
-      sinon.assert.calledOnce(needlePost);
+      expect(needlePost).to.have.been.calledOnce;
       expect(err).to.be.a('null');
       expect(res).to.be.an('object');
       expect(res.image).to.be.an('object');

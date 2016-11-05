@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import sinon from 'sinon';
+import sinonChai from 'sinon-chai';  // eslint-disable-line no-unused-vars
 
 import fs from 'fs';
 
@@ -28,7 +29,7 @@ describe('getFileStats', function () {
     });
     const cb = this.spy(err => {
       expect(err).to.eql(fakeError);
-      sinon.assert.calledOnce(fsStat);
+      expect(fsStat).to.have.been.calledOnce;
 
       fsStat.restore();
       done();
@@ -46,7 +47,7 @@ describe('getFileStats', function () {
     });
     const cb = this.spy((err, res) => {
       expect(err).to.be.a('null');
-      sinon.assert.calledOnce(fsStat);
+      expect(fsStat).to.have.been.calledOnce;
       expect(res).to.eql({
         stats: {}
       });

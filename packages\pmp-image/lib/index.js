@@ -1,87 +1,122 @@
-import Joi from 'joi';
-import async from 'async';
 import _ from 'lodash';
+import async from 'async';
+import Joi from 'joi';
 
-import main from './modules/main'
+import main from './modules/main';
 
-export default class PmpImage {
-  constructor(sourceId, options) {
-    this.sourceId = sourceId;
+import validators from './modules/validators';
 
-    this.options = {
-      pmpApiUrl: 'http://api.picmeplease.eu',
-      folderPath: './images',
-      dimensions: [150, 300],
-      request: {
-        json: true,
-        headers: {}
-      }
+function save (args, done = _.noop) {
+  const schema = Joi.object().required().keys({
+    options: validators.options,
+    link: validators.link,
+    sourceId: validators.sourceId
+  });
+
+  schema.validate(args, (err, val) => {
+    if (err) {
+      done(err);
+      return;
     }
 
-    this.options = _.merge(this.options, options);
-  }
+    async.auto({
+      generateFilename: (next) => {
+        main.generateFilename({
+          url: val.url,
+          sourceId: val.sourceId
+        }, next);
+      },
+      saveAsFile: ['generateFilename', (results, next) => {
+        main.saveAsFile({
+          url: val.url,
+          filename: results.generateFilename.filename,
+          folderPath: val.options.folderPath
+        }, next);
+      }],
+      getFileStats: ['saveAsFile', (results, next) => {
+        main.getFileStats({
+          filePath: results.saveAsFile.filePath
+        }, next);
+      }],
+      generateThumbs: ['getFileStats', (results, next) => {
+        main.generateThumbs({
+          filePath: results.saveAsFile.filePath,
+          destFolderPath: val.options.folderPath,
+          dimensions: val.options.dimensions
+        }, next);
+      }],
+      storeOnDB: ['generateThumbs', (results, next) => {
+        const metadata = results.generateThumbs.metadata;
 
-  save(args, done) {
-    const schema = Joi.object().required().keys({
-      url: Joi.string().required()
-    });
-
-    schema.validate(args, (err, val) => {
+        main.storeOnDB({
+          sourceId: this.sourceId,
+          filename: results.generateFilename.filename,
+          url: val.url,
+          meta: {
+            width: metadata.width,
+            height: metadata.height,
+            format: metadata.format,
+            size: results.getFileStats.stats.size
+          },
+          options: val.options
+        }, next);
+      }]
+    }, (err, results) => {
       if (err) {
         done(err);
         return;
       }
 
-      async.auto({
-        generateFilename: (next) => {
-          main.generateFilename({
-            url: val.url,
-            sourceId: this.sourceId
-          }, next);
-        },
-        saveAsFile: ['generateFilename', (results, next) => {
-          main.saveAsFile({
-            url: val.url,
-            filename: results.generateFilename.filename,
-            folderPath: this.options.folderPath
-          }, next);
-        }],
-        getFileStats: ['saveAsFile', (results, next) => {
-          main.getFileStats({
-            filePath: results.saveAsFile.filePath
-          }, next);
-        }],
-        generateThumbs: ['getFileStats', (results, next) => {
-          main.generateThumbs({
-            filePath: results.saveAsFile.filePath,
-            destFolderPath: this.options.folderPath,
-            dimensions: this.options.dimensions
-          }, next);
-        }],
-        storeOnDB: ['generateThumbs', (results, next) => {
-          const metadata = results.generateThumbs.metadata;
+      done(null, results.storeOnDB.image);
+    });
+  });
+}
 
-          main.storeOnDB({
-            sourceId: this.sourceId,
-            filename: results.generateFilename.filename,
-            url: val.url,
-            meta: {
-              width: metadata.width,
-              height: metadata.height,
-              format: metadata.format,
-              size: results.getFileStats.stats.size
-            },
-            options: this.options
-          }, next);
-        }]
-      }, (err, results) => {
+function saveBatch (args, done = _.noop) {
+  const schema = Joi.object().required().keys({
+    options: validators.options,
+    links: validators.links,
+    sourceId: validators.sourceId
+  });
+
+  schema.validate(args, (err, val) => {
+    if (err) {
+      done(err);
+      return;
+    }
+
+    const out = {
+      errors: [],
+      images: []
+    };
+
+    async.eachLimit(val.links, val.options.concurrency, (link, next) => {
+      this.save({
+        link
+      }, (err, image) => {
         if (err) {
-          done(err);
-          return;
+          out.errors.push({
+            message: err.message,
+            link: link
+          });
+        } else {
+          out.images.push(_.pick(image, ['filename', 'url']));
         }
 
-        done(null, results.storeOnDB.image);
+        next(null);
       });
+    }, err => {
+      if (err) {
+        done(err);
+        return;
+      }
+
+      done(null, out);
     });
-  }
+  });
 }
+
+export default {
+  save,
+  saveBatch
+};
