@@ -4,7 +4,8 @@ export default {
     pmpApiUrl: 'http://api.picmeplease.eu',
     request: {
       json: true,
-      headers: {}
+      headers: {},
+      open_timeout: 0
     }
   }
 };

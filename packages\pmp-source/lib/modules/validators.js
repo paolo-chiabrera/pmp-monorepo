@@ -7,7 +7,8 @@ export default {
     request: Joi.object().required().keys({
       json: Joi.boolean().required(),
       timeout: Joi.number().optional(),
-      headers: Joi.object().optional()
+      headers: Joi.object().optional(),
+      open_timeout: Joi.number().optional().default(0)
     })
   })
 };
