@@ -16,7 +16,8 @@ export default {
     pmpApiUrl: Joi.string().default('http://api.picmeplease.eu').optional(),
     request: Joi.object().keys({
       json: Joi.boolean().default(true).optional(),
-      headers: Joi.object().optional()
+      headers: Joi.object().optional(),
+      open_timeout: Joi.number().optional().default(0)
     }).optional()
   }).optional(),
   retryInterval: Joi.number().min(1).default(1000).optional(),

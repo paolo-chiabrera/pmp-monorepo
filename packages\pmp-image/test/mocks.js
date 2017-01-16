@@ -9,7 +9,8 @@ export default {
     dimensions: [100],
     request: {
       json: true,
-      headers: {}
+      headers: {},
+      open_timeout: 0
     }
   },
   image: {
