@@ -21,6 +21,7 @@ export default {
     pmpApiUrl: 'http://api.picmeplease.eu',
     scraperApiUrl: 'http://api.scraper.d3lirium.eu',
     request: {
+      open_timeout: 0,
       json: true,
       headers: {}
     }
