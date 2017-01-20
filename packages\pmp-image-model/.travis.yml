@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- v7
+- v6
+deploy:
+  provider: npm
+  email: paolo.chiabrera@gmail.com
+  api_key:
+    secure: E1iNoDlChIn7RRfmfuAcsIpPuevHhZRz364ZJaNDqFlVm646pRTP1uMNHzAUAb6pZkL13sYI/DVEUaPBUzILHjgn6l7AbO64pg/kaP4x5TqAlkLI3LShrw+y+nASHm4BkXD3YMag6vxFqRYPi6UbUNU87WZb3QJdVUN0Snguio1RrY+fDpSBs3Jnr6CglP1VlU1Ssh93C4CJWBBiLQCkz+6fMke0SAjoL312gbT/yA/rg3aRQrslxdXM4N82KbjqEP+rocOfSuK9IGfcGUc08qDpx/rXY9LvGImAHzL0qRCy5D06Tp+3/OOOy3s3IyOUczlb4YwwRcufWobLwxuE03maxt3lMEkT1k4BGSp9aBwnGw9B++CGXDNmmu8JVc3tlzzFdFMm30gsWxYqMKTZGIXlm269x+lGhrUa5mQVBjfy0JpLYx7kt/ussRGVnrRtZVltoxBoZ16Y1FcIm0FEVvzuEbMaS1pU4la9lbpmSUV1Be5jh1PHhv4JxrUw7LZraUH2f3hrhk5NewWkL6PD82NdrSgUsnSaXRBldku9wQsU20vFsnsV7h+9oUPmw7pPnSHl/qGB4lZd9KIYX09ZR5ouojcQRNRdD3mQDpF8W39rO4jV4ANT+AaSKWcFMe0J5UZdpcc3XCyq84pC8ZzKolD+y0UO0tiRKRc/ATfn5FM=
+  on:
+    tags: true
+    node: v6
+    repo: paolo-chiabrera/pmp-image-model
