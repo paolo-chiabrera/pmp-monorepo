@@ -1,0 +1,15 @@
+{
+  "auth": {
+    "bearer": {
+      "active": false
+    },
+    "basic": {
+      "active": false
+    }
+  },
+  "winston": {
+    "file": {
+      "filename": "./logs/pmp_be_api.log"
+    }
+  }
+}
