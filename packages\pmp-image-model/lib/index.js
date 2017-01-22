@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import timestamps from 'mongoose-timestamp';
-import mongoosePaginate from 'mongoose-paginate';
 
 const Schema = mongoose.Schema;
 
@@ -54,6 +53,5 @@ const imageSchema = new Schema({
 });
 
 imageSchema.plugin(timestamps);
-imageSchema.plugin(mongoosePaginate);
 
 export default mongoose.model('ImageModel', imageSchema, 'images');
