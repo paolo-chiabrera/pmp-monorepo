@@ -71,4 +71,4 @@ const paletteSchema = new Schema({
   }
 });
 
-export default mongoose.model('PaletteModel', paletteSchema, 'palettes');
+export default mongoose.model('PaletteModel', paletteSchema);
