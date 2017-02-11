@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import pmpImageModel from '../lib';
+import PmpImageModel from '../lib';
 
 const VALUES = {
   filename: 'fake-filename',
@@ -9,11 +9,11 @@ const VALUES = {
 
 describe('pmp-image-model', function () {
   it('should expose an object', function () {
-    expect(pmpImageModel).to.be.an.object;
+    expect(PmpImageModel).to.be.an.object;
   });
 
   it('should set the default values', function () {
-    const model = new pmpImageModel(VALUES);
+    const model = new PmpImageModel(VALUES);
 
     expect(model.filename).to.equal(VALUES.filename);
     expect(model.url).to.equal(VALUES.url);
@@ -24,5 +24,6 @@ describe('pmp-image-model', function () {
     expect(model.meta.height).to.equal(0);
     expect(model.meta.size).to.equal(0);
     expect(model.meta.format).to.equal('');
+    expect(model.palette).to.be.an('object').and.not.to.be.empty;
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "pmp-image-model",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "pmp image mongoose model",
   "homepage": "",
   "author": {
@@ -13,7 +13,7 @@
   ],
   "main": "dist/index.js",
   "keywords": [
-    ""
+    "pmp image model"
   ],
   "devDependencies": {
     "babel-core": "^5.5.0",
@@ -48,7 +48,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "mongoose": "4.7.7",
-    "mongoose-timestamp": "^0.6.0"
+    "mongoose": "4.x",
+    "mongoose-timestamp": "0.x",
+    "pmp-palette-model": "0.x"
   }
 }

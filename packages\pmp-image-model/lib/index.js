@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 
+import PmpPaletteModel from 'pmp-palette-model';
+
 const Schema = mongoose.Schema;
 
 const imageSchema = new Schema({
@@ -49,6 +51,10 @@ const imageSchema = new Schema({
       type: String,
       default: ''
     }
+  },
+  palette: {
+    type: PmpPaletteModel.schema,
+    default: PmpPaletteModel.schema
   }
 });
 
