@@ -30,7 +30,7 @@ const VALUES = {
 
 const DEFAULT_COLOUR = {
   hex: '',
-  population: 0
+  population: -1
 };
 
 describe('pmp-plaette-model', function () {

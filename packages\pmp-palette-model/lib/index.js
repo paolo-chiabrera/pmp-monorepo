@@ -11,7 +11,7 @@ const paletteSchema = new Schema({
     },
     population: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
   darkVibrant: {
@@ -22,7 +22,7 @@ const paletteSchema = new Schema({
     },
     population: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
   lightMuted: {
@@ -33,7 +33,7 @@ const paletteSchema = new Schema({
     },
     population: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
   lightVibrant: {
@@ -44,7 +44,7 @@ const paletteSchema = new Schema({
     },
     population: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
   muted: {
@@ -55,7 +55,7 @@ const paletteSchema = new Schema({
     },
     population: {
       type: Number,
-      default: 0
+      default: -1
     }
   },
   vibrant: {
@@ -66,7 +66,7 @@ const paletteSchema = new Schema({
     },
     population: {
       type: Number,
-      default: 0
+      default: -1
     }
   }
 });
