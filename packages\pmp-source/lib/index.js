@@ -1,46 +1,34 @@
 import _ from 'lodash';
 import needle from 'needle';
-import Joi from 'joi';
 
-import validators from './modules/validators';
+function getSourceById(args, done = _.noop) {
+	const { options, sourceId } = args;
+	const { pmpApiUrl, request } = options;
 
-function getSourceById(args, done) {
-  const schema = Joi.object().required().keys({
-    sourceId: validators.sourceId,
-    options: validators.options
-  });
+	const url = `${ pmpApiUrl }/sources/${ sourceId }`;
 
-  schema.validate(args, (err, val) => {
-    if (err) {
-      done(err);
-      return;
-    }
+	needle.get(url, request, (err, res) => {
+		if (err) {
+			done(err);
+			return;
+		}
 
-    const url = val.options.pmpApiUrl + '/sources/' + val.sourceId;
+		if (res.statusCode !== 200) {
+			done(new Error('wrong statusCode ' + res.statusCode));
+			return;
+		}
 
-    needle.get(url, val.options.request, (err, res) => {
-      if (err) {
-        done(err);
-        return;
-      }
+		if (!_.isObject(res.body) || _.isEmpty(res.body)) {
+			done(new Error(`source not found: ${ sourceId }`));
+			return;
+		}
 
-      if (res.statusCode !== 200) {
-        done(new Error('wrong statusCode ' + res.statusCode));
-        return;
-      }
-
-      if (!_.isObject(res.body) || _.isEmpty(res.body)) {
-        done(new Error('source not found: ' + val.sourceId));
-        return;
-      }
-
-      done(null, {
-        source: res.body
-      });
-    });
-  });
+		done(null, {
+			source: res.body
+		});
+	});
 }
 
 export default {
-  getSourceById
+	getSourceById
 }

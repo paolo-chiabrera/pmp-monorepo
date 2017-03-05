@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 
 import needle from 'needle';
@@ -8,124 +8,110 @@ import mocks from './mocks';
 import PmpSource from '../lib/index';
 
 describe('pmp-source', function () {
-  it('should be defined', function () {
-    expect(PmpSource).to.be.an('object');
-  });
+	it('should be defined', function () {
+		expect(PmpSource).to.be.an('object');
+	});
 
-  describe('getSourceById', function () {
-    it('should be defined', function () {
-      expect(PmpSource.getSourceById).to.be.a('function');
-    });
+	describe('getSourceById', function () {
+		it('should be defined', function () {
+			expect(PmpSource.getSourceById).to.be.a('function');
+		});
 
-    it('should raise a validation error', sinon.test(function (done) {
-      const _args = {
-        options: null,
-        sourceId: null
-      };
+		it('should raise an error from needle.get', sinon.test(function (done) {
+			const _args = {
+				options: mocks.options,
+				sourceId: 'test'
+			};
 
-      const cb = this.spy((err) => {
-        expect(err).to.be.an('error');
-        done();
-      });
+			const fakeError = new Error('error');
 
-      PmpSource.getSourceById(_args, cb);
-    }));
+			const get = this.stub(needle, 'get', (args, options, done) => {
+				done(fakeError);
+			});
 
-    it('should raise an error from needle.get', sinon.test(function (done) {
-      const _args = {
-        options: mocks.options,
-        sourceId: 'test'
-      };
+			const cb = this.spy((err) => {
+				expect(err).to.eql(fakeError);
 
-      const fakeError = new Error('error');
+				get.restore();
+				done();
+			});
 
-      const get = this.stub(needle, 'get', (args, options, done) => {
-        done(fakeError);
-      });
+			PmpSource.getSourceById(_args, cb);
+		}));
 
-      const cb = this.spy((err) => {
-        expect(err).to.eql(fakeError);
+		it('should raise a statusCode error from needle.get', sinon.test(function (done) {
+			const _args = {
+				options: mocks.options,
+				sourceId: 'test'
+			};
 
-        get.restore();
-        done();
-      });
+			const statusCode = 401;
 
-      PmpSource.getSourceById(_args, cb);
-    }));
+			const fakeError = new Error('wrong statusCode ' + statusCode);
 
-    it('should raise a statusCode error from needle.get', sinon.test(function (done) {
-      const _args = {
-        options: mocks.options,
-        sourceId: 'test'
-      };
+			const get = this.stub(needle, 'get', (args, options, done) => {
+				done(null, {
+					statusCode: statusCode
+				});
+			});
 
-      const statusCode = 401;
+			const cb = this.spy((err) => {
+				expect(err).to.eql(fakeError);
 
-      const fakeError = new Error('wrong statusCode ' + statusCode);
+				get.restore();
+				done();
+			});
 
-      const get = this.stub(needle, 'get', (args, options, done) => {
-        done(null, {
-          statusCode: statusCode
-        });
-      });
+			PmpSource.getSourceById(_args, cb);
+		}));
 
-      const cb = this.spy((err) => {
-        expect(err).to.eql(fakeError);
+		it('should raise an error: source not found', sinon.test(function (done) {
+			const _args = {
+				options: mocks.options,
+				sourceId: 'test'
+			};
 
-        get.restore();
-        done();
-      });
+			const fakeError = new Error('source not found: ' + _args.sourceId);
 
-      PmpSource.getSourceById(_args, cb);
-    }));
+			const get = this.stub(needle, 'get', (args, options, done) => {
+				done(null, {
+					statusCode: 200,
+					body: null
+				});
+			});
 
-    it('should raise an error: source not found', sinon.test(function (done) {
-      const _args = {
-        options: mocks.options,
-        sourceId: 'test'
-      };
+			const cb = this.spy((err) => {
+				expect(err).to.eql(fakeError);
 
-      const fakeError = new Error('source not found: ' + _args.sourceId);
+				get.restore();
+				done();
+			});
 
-      const get = this.stub(needle, 'get', (args, options, done) => {
-        done(null, {
-          statusCode: 200,
-          body: null
-        });
-      });
+			PmpSource.getSourceById(_args, cb);
+		}));
 
-      const cb = this.spy((err) => {
-        expect(err).to.eql(fakeError);
+		it('should be a success', sinon.test(function (done) {
+			const _args = {
+				options: mocks.options,
+				sourceId: 'test'
+			};
 
-        get.restore();
-        done();
-      });
+			const get = this.stub(needle, 'get', (args, options, done) => {
+				done(null, {
+					statusCode: 200,
+					body: _args
+				});
+			});
 
-      PmpSource.getSourceById(_args, cb);
-    }));
+			const cb = this.spy((err, res) => {
+				expect(err).to.be.a('null');
+				expect(res.source).to.eql(_args);
 
-    it('should be a success', sinon.test(function (done) {
-      const _args = {
-        options: mocks.options,
-        sourceId: 'test'
-      };
+				get.restore();
+				done();
+			});
 
-      const get = this.stub(needle, 'get', (args, options, done) => {
-        done(null, {
-          statusCode: 200,
-          body: _args
-        });
-      });
-
-      const cb = this.spy((err, res) => {
-        expect(err).to.be.a('null');
-        expect(res.source).to.eql(_args);
-
-        get.restore();
-        done();
-      });
-
-      PmpSource.getSourceById(_args, cb);
-    }));
-  });
+			PmpSource.getSourceById(_args, cb);
+		}));
+	});
 });
