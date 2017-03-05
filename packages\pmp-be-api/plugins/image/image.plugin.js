@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 
-const routes = require('./image.route');
+const routes = require('./routes');
 
 exports.register = function (server, options, next) {
   // add all the routes exposed by the plugin
