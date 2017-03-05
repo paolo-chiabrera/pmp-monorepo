@@ -1,25 +1,9 @@
-import Joi from 'joi';
+import _ from 'lodash';
 
-/**
-* [getImagesThreshold description]
-* @param  {Object}
-* @param  {Function}
-*/
-export default function getImagesThreshold(args, done) {
+export default function getImagesThreshold(args, done = _.noop) {
+	const { scrapedImages, validImages } = args;
 
-  const schema = Joi.object().required().keys({
-    scrapedImages: Joi.array().required(),
-    validImages: Joi.array().required()
-  });
-
-  schema.validate(args, (err, val) => {
-    if (err) {
-      done(err);
-      return;
-    }
-
-    done(null, {
-      threshold: val.validImages.length / val.scrapedImages.length
-    });
-  });
+	done(null, {
+		threshold: validImages.length / scrapedImages.length
+	});
 }

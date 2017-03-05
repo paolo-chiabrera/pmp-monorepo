@@ -1,55 +1,48 @@
-import Joi from 'joi';
+import _ from 'lodash';
 import needle from 'needle';
 import async from 'async';
 
-import validators from './validators';
+export default function scrapeUrl(args, done = _.noop) {
+	const { options, retryInterval, source, targetUrl } = args;
+	const { request, scraperApiUrl } = options;
+	const { mainPageSelector, mainPageAttribute, imagePageSelector, imagePageAttribute } = source;
 
-/**
-* [scrapeUrl description]
-* @param  {Object}
-* @param  {Function}
-*/
-export default function scrapeUrl(args, done) {
-  const schema = Joi.object().required().keys({
-    source: validators.source,
-    options: validators.options,
-    targetUrl: Joi.string().required(),
-    retryInterval: validators.retryInterval
-  });
+	const payload = {
+		url: targetUrl,
+		selectors: {
+			page: `${ mainPageSelector }@${ mainPageAttribute }`,
+			image: `${ imagePageSelector }@${ imagePageAttribute }`
+		}
+	};
 
-  schema.validate(args, (err, val) => {
-    if (err) {
-      done(err);
-      return;
-    }
+	async.retry({
+		times: 3,
+		interval: retryInterval
+	}, next => {
+		needle.post(`${ scraperApiUrl }/scrape`, payload, request, (err, res) => {
+			if (err) {
+				next(err);
+				return;
+			}
 
-    const url = val.options.scraperApiUrl + '/scrape';
+			if (res.statusCode !== 200) {
+				next(new Error(`wrong statusCode ${ res.statusCode } ${ res.statusMessage }`));
+				return;
+			}
 
-    const payload = {
-      url: val.targetUrl,
-      selectors: {
-        page: val.source.mainPageSelector + '@' + val.source.mainPageAttribute,
-        image: val.source.imagePageSelector + '@' + val.source.imagePageAttribute
-      }
-    };
+			if (!_.isObject(res.body) || _.isEmpty(res.body)) {
+				next(new Error('res.body is not valid'));
+				return;
+			}
 
-    async.retry({
-      times: 3,
-      interval: val.retryInterval
-    }, next => {
-      needle.post(url, payload, val.options.request, (err, res) => {
-        if (err) {
-          next(err);
-          return;
-        }
+			if (!_.isArray(res.body.results)) {
+				next(new Error('res.body.results is not an array'));
+				return;
+			}
 
-        if (res.statusCode !== 200) {
-          next(new Error('wrong statusCode ' + res.statusCode + ' ' + res.statusMessage));
-          return;
-        }
-
-        next(null, res.body);
-      });
-    }, done);
-  });
+			next(null, {
+				links: res.body.results
+			});
+		});
+	}, done);
 }

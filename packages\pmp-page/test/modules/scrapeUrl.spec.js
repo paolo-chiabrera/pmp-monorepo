@@ -1,7 +1,7 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 sinon.config = {
-  useFakeTimers: false
+	useFakeTimers: false
 };
 
 import needle from 'needle';
@@ -10,99 +10,130 @@ import scrapeUrl from '../../lib/modules/scrapeUrl';
 
 import mocks from '../mocks';
 
+function _scrapeUrl(callback) {
+	const { options, retryInterval, source, targetUrl } = mocks;
+
+	scrapeUrl({
+		options,
+		retryInterval,
+		source,
+		targetUrl
+	}, callback);
+}
+
 describe('scrapeUrl', function () {
-  it('should be defined', function () {
-    expect(scrapeUrl).to.be.a('function');
-  });
+	it('should be defined', function () {
+		expect(scrapeUrl).to.be.a('function');
+	});
 
-  it('should return an error: validation', sinon.test(function (done) {
-    const cb = this.spy(err => {
-      expect(err).to.be.an('error');
-      done();
-    });
+	it('should return an error: needle.post', sinon.test(function (done) {
+		const fakeError = new Error('error');
+		const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(fakeError);
+		});
 
-    scrapeUrl({}, cb);
-  }));
+		const cb = this.spy(err => {
+			sinon.assert.calledThrice(needlePost);
+			expect(err).to.eql(fakeError);
 
-  it('should return an error: needle.post', sinon.test(function (done) {
-    const fakeError = new Error('error');
-    const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
-      callback(fakeError);
-    });
+			needlePost.restore();
+			done();
+		});
 
-    const cb = this.spy(err => {
-      sinon.assert.calledThrice(needlePost);
-      expect(err).to.eql(fakeError);
+		_scrapeUrl(cb);
+	}));
 
-      needlePost.restore();
-      done();
-    });
+	it('should return an error: statusCode', sinon.test(function (done) {
+		const statusCode = 401;
+		const statusError = new Error('wrong statusCode ' + statusCode);
+		const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(null, {
+				statusCode: statusCode
+			});
+		});
 
-    scrapeUrl({
-      options: mocks.options,
-      source: mocks.source,
-      targetUrl: mocks.targetUrl,
-      retryInterval: mocks.retryInterval
-    }, cb);
-  }));
+		const cb = this.spy(err => {
+			sinon.assert.calledThrice(needlePost);
+			expect(err).to.eql(statusError);
 
-  it('should return an error: statusCode', sinon.test(function (done) {
-    const statusCode = 401;
-    const statusError = new Error('wrong statusCode ' + statusCode);
-    const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
-      callback(null, {
-        statusCode: statusCode
-      });
-    });
+			needlePost.restore();
+			done();
+		});
 
-    const cb = this.spy(err => {
-      sinon.assert.calledThrice(needlePost);
-      expect(err).to.eql(statusError);
+		_scrapeUrl(cb);
+	}));
 
-      needlePost.restore();
-      done();
-    });
+	it('should return an error: res.body is not valid', sinon.test(function (done) {
+		const error = new Error('res.body is not valid');
+		const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(null, {
+				statusCode: 200,
+				body: null
+			});
+		});
 
-    scrapeUrl({
-      options: mocks.options,
-      source: mocks.source,
-      targetUrl: mocks.targetUrl,
-      retryInterval: mocks.retryInterval
-    }, cb);
-  }));
+		const cb = this.spy(err => {
+			sinon.assert.calledThrice(needlePost);
+			expect(err).to.deep.equal(error);
 
-  it('should return successfully', sinon.test(function (done) {
-    const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
-      expect(url).to.eql(mocks.options.scraperApiUrl + '/scrape');
-      expect(payload).to.eql({
-        url: mocks.targetUrl,
-        selectors: {
-          page: mocks.source.mainPageSelector + '@' + mocks.source.mainPageAttribute,
-          image: mocks.source.imagePageSelector + '@' + mocks.source.imagePageAttribute
-        }
-      });
-      expect(options).to.eql(mocks.options.request);
+			needlePost.restore();
+			done();
+		});
 
-      callback(null, {
-        statusCode: 200,
-        body: []
-      });
-    });
+		_scrapeUrl(cb);
+	}));
 
-    const cb = this.spy((err, res) => {
-      sinon.assert.calledOnce(needlePost);
-      expect(err).to.be.a('null');
-      expect(res).to.eql([]);
+	it('should return an error: res.body.results is not an array', sinon.test(function (done) {
+		const error = new Error('res.body.results is not an array');
+		const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(null, {
+				statusCode: 200,
+				body: {
+					results: null
+				}
+			});
+		});
 
-      needlePost.restore();
-      done();
-    });
+		const cb = this.spy(err => {
+			sinon.assert.calledThrice(needlePost);
+			expect(err).to.deep.equal(error);
 
-    scrapeUrl({
-      options: mocks.options,
-      source: mocks.source,
-      targetUrl: mocks.targetUrl,
-      retryInterval: mocks.retryInterval
-    }, cb);
-  }));
+			needlePost.restore();
+			done();
+		});
+
+		_scrapeUrl(cb);
+	}));
+
+	it('should return successfully', sinon.test(function (done) {
+		const needlePost = sinon.stub(needle, 'post', (url, payload, options, callback) => {
+			expect(url).to.eql(mocks.options.scraperApiUrl + '/scrape');
+			expect(payload).to.eql({
+				url: mocks.targetUrl,
+				selectors: {
+					page: mocks.source.mainPageSelector + '@' + mocks.source.mainPageAttribute,
+					image: mocks.source.imagePageSelector + '@' + mocks.source.imagePageAttribute
+				}
+			});
+			expect(options).to.eql(mocks.options.request);
+
+			callback(null, {
+				statusCode: 200,
+				body: {
+					results: []
+				}
+			});
+		});
+
+		const cb = this.spy((err, res) => {
+			sinon.assert.calledOnce(needlePost);
+			expect(err).to.be.a('null');
+			expect(res.links).to.deep.equal([]);
+
+			needlePost.restore();
+			done();
+		});
+
+		_scrapeUrl(cb);
+	}));
 });

@@ -5,9 +5,9 @@ import scrapeUrl from './scrapeUrl';
 import getImagesThreshold from './getImagesThreshold';
 
 export default {
-  filterDuplicates,
-  filterLinks,
-  getPageUrl,
-  scrapeUrl,
-  getImagesThreshold
+	filterDuplicates,
+	filterLinks,
+	getPageUrl,
+	scrapeUrl,
+	getImagesThreshold
 };

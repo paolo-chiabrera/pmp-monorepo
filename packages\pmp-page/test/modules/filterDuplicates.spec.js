@@ -1,4 +1,4 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import sinon from 'sinon';
 
 import needle from 'needle';
@@ -7,87 +7,76 @@ import filterDuplicates from '../../lib/modules/filterDuplicates';
 
 import mocks from '../mocks';
 
+function _filterDuplicates(callback) {
+	const { filteredLinks, options, retryInterval } = mocks;
+
+	filterDuplicates({
+		options,
+		links: filteredLinks,
+		retryInterval
+	}, callback);
+}
+
 describe('filterDuplicates', function () {
-  it('should be defined', function () {
-    expect(filterDuplicates).to.be.a('function');
-  });
+	it('should be defined', function () {
+		expect(filterDuplicates).to.be.a('function');
+	});
 
-  it('should return an error: validation', sinon.test(function (done) {
-    const cb = this.spy(err => {
-      expect(err).to.be.an('error');
-      done();
-    });
+	it('should return an error: needle.post', sinon.test(function (done) {
+		const fakeError = new Error('error');
+		const needlePost = this.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(fakeError);
+		});
 
-    filterDuplicates({}, cb);
-  }));
+		const cb = this.spy(err => {
+			sinon.assert.calledThrice(needlePost);
+			expect(err).to.eql(fakeError);
 
-  it('should return an error: needle.post', sinon.test(function (done) {
-    const fakeError = new Error('error');
-    const needlePost = this.stub(needle, 'post', (url, payload, options, callback) => {
-      callback(fakeError);
-    });
+			needlePost.restore();
+			done();
+		});
 
-    const cb = this.spy(err => {
-      sinon.assert.calledThrice(needlePost);
-      expect(err).to.eql(fakeError);
+		_filterDuplicates(cb);
+	}));
 
-      needlePost.restore();
-      done();
-    });
+	it('should return an error: statusCode', sinon.test(function (done) {
+		const statusCode = 401;
+		const statusError = new Error('wrong statusCode ' + statusCode);
+		const needlePost = this.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(null, {
+				statusCode: statusCode
+			});
+		});
 
-    filterDuplicates({
-      options: mocks.options,
-      links: mocks.filteredLinks,
-      retryInterval: mocks.retryInterval
-    }, cb);
-  }));
+		const cb = this.spy(err => {
+			sinon.assert.calledThrice(needlePost);
+			expect(err).to.eql(statusError);
 
-  it('should return an error: statusCode', sinon.test(function (done) {
-    const statusCode = 401;
-    const statusError = new Error('wrong statusCode ' + statusCode);
-    const needlePost = this.stub(needle, 'post', (url, payload, options, callback) => {
-      callback(null, {
-        statusCode: statusCode
-      });
-    });
+			needlePost.restore();
+			done();
+		});
 
-    const cb = this.spy(err => {
-      sinon.assert.calledThrice(needlePost);
-      expect(err).to.eql(statusError);
+		_filterDuplicates(cb);
+	}));
 
-      needlePost.restore();
-      done();
-    });
+	it('should return a filtered array of links', sinon.test(function (done) {
+		const needlePost = this.stub(needle, 'post', (url, payload, options, callback) => {
+			callback(null, {
+				statusCode: 200,
+				body: [{imageUrl: mocks.filteredLinks[0]}]
+			});
+		});
 
-    filterDuplicates({
-      options: mocks.options,
-      links: mocks.filteredLinks,
-      retryInterval: mocks.retryInterval
-    }, cb);
-  }));
+		const cb = this.spy((err, res) => {
+			sinon.assert.calledOnce(needlePost);
+			expect(err).to.be.a('null');
+			expect(res).to.be.an('object');
+			expect(res.links).to.eql(mocks.filteredLinks.slice(1));
 
-  it('should return a filtered array of links', sinon.test(function (done) {
-    const needlePost = this.stub(needle, 'post', (url, payload, options, callback) => {
-      callback(null, {
-        statusCode: 200,
-        body: [{imageUrl: mocks.filteredLinks[0]}]
-      });
-    });
+			needlePost.restore();
+			done();
+		});
 
-    const cb = this.spy((err, res) => {
-      sinon.assert.calledOnce(needlePost);
-      expect(err).to.be.a('null');
-      expect(res).to.be.an('object');
-      expect(res.links).to.eql(mocks.filteredLinks.slice(1));
-
-      needlePost.restore();
-      done();
-    });
-
-    filterDuplicates({
-      options: mocks.options,
-      links: mocks.filteredLinks,
-      retryInterval: mocks.retryInterval
-    }, cb);
-  }));
+		_filterDuplicates(cb);
+	}));
 });

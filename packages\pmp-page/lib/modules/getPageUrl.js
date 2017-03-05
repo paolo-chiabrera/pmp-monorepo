@@ -1,28 +1,12 @@
-import Joi from 'joi';
+import _ from 'lodash';
 
-import validators from './validators';
+export default function getPageUrl(args, done = _.noop) {
+	const { pageNumber, source } = args;
+	const { offset, startingOffset, url } = source;
 
-/**
-* [getPageUrl description]
-* @param  {Object}
-* @param  {Function}
-*/
-export default function getPageUrl(args, done) {
-  const schema = Joi.object().required().keys({
-    pageNumber: validators.pageNumber,
-    source: validators.source
-  });
+	const _offset = startingOffset + offset * pageNumber;
 
-  schema.validate(args, (err, val) => {
-    if (err) {
-      done(err);
-      return;
-    }
-
-    const offset = val.source.startingOffset + val.source.offset * val.pageNumber;
-
-    done(null, {
-      url: val.source.url.replace('{{offset}}', offset)
-    });
-  });
+	done(null, {
+		url: url.replace('{{offset}}', _offset)
+	});
 }

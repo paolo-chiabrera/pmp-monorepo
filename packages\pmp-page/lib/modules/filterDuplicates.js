@@ -1,56 +1,33 @@
-import Joi from 'joi';
 import needle from 'needle';
 import _ from 'lodash';
 import async from 'async';
 
-import validators from './validators';
+export default function filterDuplicates(args, done = _.noop) {
+	const { links, options, retryInterval = 500 } = args;
+	const { pmpApiUrl, request } = options;
 
-/**
-* [filterDuplicates description]
-* @param  {Object}
-* @param  {Function}
-*/
-export default function filterDuplicates(args, done) {
-  const schema = Joi.object().required().keys({
-    options: validators.options,
-    links: validators.links,
-    retryInterval: validators.retryInterval
-  });
+	const payload = {
+		imageUrl: links
+	};
 
-  schema.validate(args, (err, val) => {
-    if (err) {
-      done(err);
-      return;
-    }
+	async.retry({
+		times: 3,
+		interval: retryInterval
+	}, next => {
+		needle.post(`${ pmpApiUrl }/images/existing`, payload, request, (err, res) => {
+			if (err) {
+				next(err);
+				return;
+			}
 
-    const url = val.options.pmpApiUrl + '/images/existing';
+			if (res.statusCode !== 200) {
+				next(new Error(`wrong statusCode ${ res.statusCode } ${ res.statusMessage }`));
+				return;
+			}
 
-    const payload = {
-      imageUrl: val.links
-    };
-
-    async.retry({
-      times: 3,
-      interval: val.retryInterval
-    }, next => {
-      needle.post(url, payload, val.options.request, (err, res) => {
-        if (err) {
-          next(err);
-          return;
-        }
-
-        if (res.statusCode !== 200) {
-          next(new Error('wrong statusCode ' + res.statusCode + ' ' + res.statusMessage));
-          return;
-        }
-
-        // filter the duplicates
-        const links = _.difference(val.links, _.map(res.body, 'imageUrl'));
-
-        next(null, {
-          links: links
-        });
-      });
-    }, done);
-  });
+			next(null, {
+				links: _.difference(links, _.map(res.body, 'imageUrl'))
+			});
+		});
+	}, done);
 }

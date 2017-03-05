@@ -1,66 +1,62 @@
+import _ from 'lodash';
 import async from 'async';
-import Joi from 'joi';
 
 import main from './modules/main';
-import validators from './modules/validators';
 
-function scrape (args, done) {
-  const schema = Joi.object().required().keys({
-    pageNumber: validators.pageNumber,
-    options: validators.options,
-    source: validators.source
-  });
+function scrape (args, done = _.noop) {
+	const { options, pageNumber, source } = args;
 
-  schema.validate(args, (err, val) => {
-    if (err) {
-      done(err);
-      return;
-    }
+	async.auto({
+		getPageUrl: (next) => {
+			main.getPageUrl({
+				pageNumber,
+				source
+			}, next);
+		},
+		scrapeUrl: ['getPageUrl', (results, next) => {
+			const { url } = results.getPageUrl;
 
-    async.auto({
-      getPageUrl: (next) => {
-        main.getPageUrl({
-          pageNumber: val.pageNumber,
-          source: val.source
-        }, next);
-      },
-      scrapeUrl: ['getPageUrl', (results, next) => {
-        main.scrapeUrl({
-          options: val.options,
-          source: val.source,
-          targetUrl: results.getPageUrl.url
-        }, next);
-      }],
-      filterLinks: ['scrapeUrl', (results, next) => {
-        main.filterLinks({
-          links: results.scrapeUrl.results
-        }, next);
-      }],
-      filterDuplicates: ['filterLinks', (results, next) => {
-        main.filterDuplicates({
-          links: results.filterLinks.links,
-          options: val.options
-        }, next);
-      }],
-      getImagesThreshold: ['filterDuplicates', (results, next) => {
-        main.getImagesThreshold({
-          scrapedImages: results.scrapeUrl.results,
-          validImages: results.filterDuplicates.links
-        }, next);
-      }]
-    }, (err, results) => {
-      if (err) {
-        done(err);
-        return;
-      }
+			main.scrapeUrl({
+				options,
+				source,
+				targetUrl: url
+			}, next);
+		}],
+		filterLinks: ['scrapeUrl', (results, next) => {
+			const { links } = results.scrapeUrl;
 
-      done(null, {
-        links: results.filterDuplicates.links,
-        pageUrl: results.getPageUrl.url,
-        threshold: results.getImagesThreshold.threshold
-      });
-    });
-  });
+			main.filterLinks({
+				links
+			}, next);
+		}],
+		filterDuplicates: ['filterLinks', (results, next) => {
+			const { links } = results.filterLinks;
+
+			main.filterDuplicates({
+				links,
+				options
+			}, next);
+		}],
+		getImagesThreshold: ['filterDuplicates', (results, next) => {
+			const { filterDuplicates, scrapeUrl } = results;
+
+			main.getImagesThreshold({
+				scrapedImages: scrapeUrl.links,
+				validImages: filterDuplicates.links
+			}, next);
+		}]
+	}, (err, results) => {
+		if (err) {
+			done(err);
+			return;
+		}
+
+		done(null, {
+			links: results.filterDuplicates.links,
+			pageUrl: results.getPageUrl.url,
+			threshold: results.getImagesThreshold.threshold
+		});
+	});
 }
 
 export default {
