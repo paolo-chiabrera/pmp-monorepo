@@ -37,12 +37,6 @@
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0"
   },
-  "eslintConfig": {
-    "extends": "xo-space",
-    "env": {
-      "mocha": true
-    }
-  },
   "repository": "https://github.com/paolo-chiabrera/pmp-image.git",
   "scripts": {
     "prepublish": "gulp prepublish",
@@ -51,9 +45,8 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.0.1",
-    "joi": "^9.0.4",
     "lodash": "^4.15.0",
     "needle": "^1.1.0",
-    "sharp": "^0.16.0"
+    "sharp": "^0.17.2"
   }
 }
