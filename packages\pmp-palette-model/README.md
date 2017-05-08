@@ -1,5 +1,5 @@
 # pmp-palette-model [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url] [![Coverage percentage][coveralls-image]][coveralls-url]
-> 
+>
 
 ## Installation
 
@@ -7,13 +7,6 @@
 $ npm install --save pmp-palette-model
 ```
 
-## Usage
-
-```js
-var pmpPaletteModel = require('pmp-palette-model');
-
-pmpPaletteModel('Rainbow');
-```
 ## License
 
 MIT © [Paolo Chiabrera](https://github.com/paolo-chiabrera)
