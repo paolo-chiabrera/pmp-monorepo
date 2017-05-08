@@ -1,6 +1,6 @@
 {
   "name": "pmp-image-model",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "pmp image mongoose model",
   "homepage": "",
   "author": {
@@ -50,6 +50,6 @@
   "dependencies": {
     "mongoose": "4.x",
     "mongoose-timestamp": "0.x",
-    "pmp-palette-model": "0.0.4"
+    "pmp-palette-model": "0.0.5"
   }
 }
