@@ -85,7 +85,7 @@ const conf = convict({
   port: {
     doc: 'The port to bind.',
     format: 'port',
-    default: 8080,
+    default: 9000,
     env: 'NODE_PORT'
   },
   squeeze: {
