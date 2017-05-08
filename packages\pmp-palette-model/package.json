@@ -1,6 +1,6 @@
 {
   "name": "pmp-palette-model",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "pmp palette mongoose model",
   "homepage": "",
   "author": {
@@ -34,12 +34,6 @@
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
     "isparta": "^3.0.3"
-  },
-  "eslintConfig": {
-    "extends": "xo-space",
-    "env": {
-      "mocha": true
-    }
   },
   "repository": "https://github.com/paolo-chiabrera/pmp-palette-model.git",
   "scripts": {
