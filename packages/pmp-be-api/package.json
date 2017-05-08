@@ -1,0 +1,61 @@
+{
+  "name": "pmp-be-api",
+  "version": "0.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node ./node_modules/lab/bin/lab -e test -v -c -L -m 5000 -r console -o stdout -r lcov -o test/coverage/lcov.info"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paolo-chiabrera/pmp-be-api.git"
+  },
+  "keywords": [
+    "pmp",
+    "api"
+  ],
+  "engines": {
+    "node": ">=4.5.0"
+  },
+  "author": {
+    "name": "Paolo Chiabrera",
+    "email": "paolo.chiabrera@gmail.com",
+    "url": "https://github.com/paolo-chiabrera"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paolo-chiabrera/pmp-be-api/issues"
+  },
+  "homepage": "https://github.com/paolo-chiabrera/pmp-be-api#readme",
+  "dependencies": {
+    "@risingstack/trace": "3.x",
+    "async": "^2.1.4",
+    "bcryptjs": "^2.4.0",
+    "blipp": "^2.3.0",
+    "bluebird": "^3.4.7",
+    "boom": "^4.2.0",
+    "convict": "^2.0.0",
+    "good": "^7.1.0",
+    "good-console": "^6.1.3",
+    "good-squeeze": "^5.0.1",
+    "good-winston-object": "0.x",
+    "hapi": "^16.1.0",
+    "hapi-auth-basic": "^4.2.0",
+    "hapi-auth-bearer-token": "^4.3.1",
+    "hapi-response-helper": "0.x",
+    "hapi-swagger": "^7.6.0",
+    "inert": "^4.1.0",
+    "joi": "^10.2.0",
+    "lodash": "^4.17.4",
+    "mongoose": "4.x",
+    "pmp-image-model": "0.x",
+    "vision": "^4.1.1",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "code": "^4.0.0",
+    "coveralls": "^2.11.15",
+    "lab": "^12.0.0"
+  }
+}

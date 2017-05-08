@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "bearer": {
+      "active": false
+    },
+    "basic": {
+      "active": false
+    }
+  }
+}

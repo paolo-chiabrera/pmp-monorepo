@@ -1,0 +1,20 @@
+{
+  "auth": {
+    "bearer": {
+      "active": false
+    },
+    "basic": {
+      "active": false
+    }
+  },
+  "bleep": {
+    "showStart": false
+  },
+  "port": 3001,
+  "squeeze": {
+    "args": [{
+      "error": "*",
+      "logs": "*"
+    }]
+  }
+}
