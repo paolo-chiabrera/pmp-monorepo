@@ -35,12 +35,6 @@
     "gulp-plumber": "^1.0.0",
     "isparta": "^3.0.3"
   },
-  "eslintConfig": {
-    "extends": "xo-space",
-    "env": {
-      "mocha": true
-    }
-  },
   "repository": "https://github.com/paolo-chiabrera/pmp-palette-model.git",
   "scripts": {
     "prepublish": "gulp prepublish",
