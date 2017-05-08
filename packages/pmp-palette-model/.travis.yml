@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- v7
+- v6
+deploy:
+  provider: npm
+  email: paolo.chiabrera@gmail.com
+  api_key:
+    secure: RrUuBqiSEeeflaFh9HP8GA2Pwlh/zxHVYwO9r6D8AfegxTOyPelVauwI2goY9Vl055tkvo2txWxnwjLhbEG3AvIahTYP+BMeo6Dv2Z8hVZgi30ELdQgQLh91L4rWDKpUrOuNlHV2LSaBBRo041OCX+oLXaLvDaKAjynYFzXzUbVa0QObfO6F/3Ns25cjeTxD076s3Mewp9nLlYAUWhXAtQm0eO+qo50sfUvdHbZ+6iX3tfjs8j6mxaNpLJaBbs+0cvbS9OO6cOBJ5nuEuvpVFJoj83kJTKbDp74FzECnI8ktl1FZWb+JqZmULfshtizNjKFO7r6N9Is8qgXK/4xK6ySK/BlWflPCBcrEW/MGjRXrbbj2AZjdFQdr2V8oEyvP1ev3EdyooyyXIUI1PXD+8uxTuiYgxUfidQJ5oGFS7MOMMgVq+Vcv8V46wX8r5L7QRevY78PjfS3kBbEVDrcIGxDy3vhqdtVoC8gr/co8L6fv2jb67265J3Y10FmqV+1M/gUGvOozl2i/FC9txmzgPL0lEa4ZVSROR4XM6f7eHZDlQugYSG4aMyxRrVyhORm7RpbTAxSPaoKigtHEI5/bkOhnXTn1jEVyEvUitXqr4LKFmLiFhDeBYZeQNPWzhUJ9w8KJwnf4EtPE19eWmWtiK3RBxGVKl+qg55+KKkimgb4=
+  on:
+    tags: true
+    node: v6
+    repo: paolo-chiabrera/pmp-palette-model
