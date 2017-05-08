@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- v7
+- v6
+deploy:
+  provider: npm
+  email: paolo.chiabrera@gmail.com
+  api_key:
+    secure: gJ7zc+5tT0qZMCrS2F5mOukCcrR2TfVzJ8aEOVsr6aH4M87lq/FHnvh8vJBfnrAw2ivgERCHbNm6lBTAoRo4wCkJL6/Adb4uuIYml62iQwRaHBWj6k8kwTfMUcu1a3b0rPzI+A9qD/qbAdfctm/2RoV7l5JTqsoDKpZkqt8+MEXNtgI9wYTc1HJALP8TGgSmG0/dtGRZYs10IFbV//XeuZU91bVPMLirStL/VZyP/0jwc3gUjcX67J73NSp40iVm86+rhu88uiJQAx5cx7nYkRidaUdUZgi8foKVHOAcEDCzF0jhvTbibzSwWY54lMPAsnnAketlIO4eUMMFNaIcFANP9/t1o63c2KIFFgT73IgMc1TBzuwE5hH7sSnL7y790VjVk3DNJpfguK/HU8zyiuDBCQuWzrNgggoJbLXjAPMVY4y5iKjUqkL5a3i89AvlxZhacaJY86qA4QdWGaOpZVcxTClIzh+ZjOaxN7uHv3ZKlJsklcfPk1iPzDp0Wwv6A6WWHWj5WE7h5wK5j3ASlkA7eF8j9QK0LnNuFFYeDlFrJNxe1mIBQBsC4KkKc8B2+8h1RtNDqphRanUVY1F2IzW31tmacrM0C3Pmtq38Uk5+qEo9dSZCKJKEiarOvd45scYQOwMqJauyRPV5VYhPJBEEH4grooUQJRpQ5Z3+xHU=
+  on:
+    tags: true
+    node: v6
+    repo: paolo-chiabrera/pmp-image
