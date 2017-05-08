@@ -1,6 +1,6 @@
 {
   "name": "pmp-scraper",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "PicMePlease Scraper API",
   "homepage": "",
   "author": {
@@ -53,8 +53,8 @@
     "fs-extra": "^1.0.0",
     "lodash": "^4.15.0",
     "needle": "^1.1.0",
-    "pmp-image": "0.x",
-    "pmp-page": "0.x",
-    "pmp-source": "0.x"
+    "pmp-image": "0.0.17",
+    "pmp-page": "0.0.6",
+    "pmp-source": "0.0.5"
   }
 }
